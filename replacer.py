@@ -1,3 +1,4 @@
+# coding=utf-8
 "Replaces references to sprites with offsetted background declarations."
 
 import logging
@@ -33,7 +34,7 @@ class SpriteReplacer(object):
             except NoSpriteFound:
                 pass
             else:
-                sref = SpriteRef(css.conf.normpath(url), source=css.fname,position = position)
+                sref = SpriteRef(css.conf.normpath(url), source=css.fname)#问题所在!!!!
                 try:
                     new = self._replace_val(css, ev, sref)
                 except KeyError:

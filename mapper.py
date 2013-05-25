@@ -24,12 +24,10 @@ class BaseMapper(object):
         smaps = {}
         for sref in srefs:
             fname = self(sref)
-            positionStr=''.join(sref.position)
-            namePlusPosition = fname+' '+positionStr
             smap = smaps.get(fname)
             #这里检测position是否相同!!!
             if smap is None:
-                smap = smaps[fname] = SpriteMap(fname,position = sref.position)
+                smap = smaps[fname] = SpriteMap(fname)
             if sref not in smap:
                 smap.append(sref)
         return smaps

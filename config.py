@@ -20,9 +20,8 @@ def iter_css_config(parser):
 
 class CSSConfig(object):
     def __init__(self, parser=None, base=None, root=None, fname=None):
-        # fname exist,root not exist
         if fname and root is None:
-            root = path.dirname(fname)#root is the path name.without filename
+            root = path.dirname(fname)
         self.root = root
         self._data = dict(base) if base else {}
         if parser is not None:
@@ -30,7 +29,6 @@ class CSSConfig(object):
 
     def __iter__(self):
         # this is mostly so you can go CSSConfig(base=CSSConfig(..))
-        # return key-value style ---array
         return self._data.iteritems()
 
     @classmethod
@@ -119,8 +117,7 @@ def print_config(fname):
 
 def main():
     import sys
-    for fn in sys.argv[1:]:
-        print_config(fn)
+    map(print_config, sys.argv[1:])
 
 if __name__ == "__main__":
     main()

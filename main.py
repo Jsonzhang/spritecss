@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import sys
 import logging
 import optparse
@@ -15,7 +14,7 @@ from spritecss.packing.sprites import open_sprites
 from spritecss.stitch import stitch
 from spritecss.replacer import SpriteReplacer
 
-logger = logging.getLogger(__name__) #spritecss.main
+logger = logging.getLogger(__name__)
 
 # TODO CSSFile should probably fit into the bigger picture
 class CSSFile(object):
@@ -30,8 +29,6 @@ class CSSFile(object):
 
     @classmethod
     def open_file(cls, fname, conf=None):
-        #cls is an instance of CSSFile
-        #fname is the filename part
         with cls(fname).open_parser() as p:
             return cls(fname, conf=CSSConfig(p, base=conf, fname=fname))
 
@@ -45,15 +42,12 @@ class CSSFile(object):
 
     def map_sprites(self):
         with self.open_parser() as p:
-            #find_sprite_refs()将所有spriteref集合起来生成一个迭代器,迭代出来的是所有图片路径
             srefs = find_sprite_refs(p, conf=self.conf, source=self.fname)
-            #test_sref 测试文件的访问权限
             def test_sref(sref):
                 if not access(str(sref), R_OK):
                     logger.error("%s: not readable", sref); return False
                 else:
                     logger.debug("%s passed", sref); return True
-            #返回一个迭代器.如果参数二中的元素能让参数一的方法返回true则加入该返回的迭代器(这个迭代器是一个ifilter对象)
             return self.mapper.map_reduced(ifilter(test_sref, srefs))
 
 class InMemoryCSSFile(CSSFile):
@@ -71,34 +65,27 @@ def spritemap(css_fs, conf=None, out=sys.stderr):
     w_ln = lambda t: out.write(t + "\n")
 
     #: sum of all spritemaps used from any css files
-    # smaps内存放所有CSS文件内的图片路径
     smaps = SpriteMapCollector(conf=conf)
+
     for css in css_fs:
         w_ln("mapping sprites in source %s" % (css.fname,))
-        #这个步骤解析出图片路径 其中map.sprites解析出路径 collect负责将其改变成一个SpriteMap对象
         for sm in smaps.collect(css.map_sprites()):
             w_ln(" - %s" % (sm.fname,))
 
     # Weed out single-image spritemaps (these make no sense.)
-    # 如果整个CSS文件内只有一个图片路径就不要白费力气了亲.如果有多个那么就由smaps先森来管理你们吧
     smaps = [sm for sm in smaps if len(sm) > 1]
 
     sm_plcs = []
-    #smaps 内包含所有CSS文件的所有图片路径,smap包含的则是一个CSS文件的所有图片路径
     for smap in smaps:
-        #sprites中包含SpriteNode对象,其中有每一个精灵及其具体的属性
         with open_sprites(smap, pad=conf.padding) as sprites:
             w_ln("packing sprites in mapping %s" % (smap.fname,))
             logger.debug("annealing %s in steps of %d",
                          smap.fname, conf.anneal_steps)
             packed = PackedBoxes(sprites, anneal_steps=conf.anneal_steps)
             print_packed_size(packed)
-            #packed.placements存储的是新图像的sprite位置信息
-            #smap存储的是新图像中的sprite元信息
             sm_plcs.append((smap, packed.placements))
 
             w_ln("writing spritemap image at %s" % (smap.fname,))
-            #im包含的是sprites的元素,用于写入到新的大sprites中
             im = stitch(packed)
             with open(smap.fname, "wb") as fp:
                 im.save(fp)
@@ -151,8 +138,8 @@ def main():
         base["padding"] = (opts.padding, opts.padding)
 
     conf = CSSConfig(base=base)
-
     spritemap([css_cls.open_file(fn, conf=conf) for fn in args], conf=conf)
 
 if __name__ == "__main__":
+    print('hellohaha')
     main()
