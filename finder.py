@@ -16,19 +16,38 @@ po_url_re = re.compile(r'(^-?\d+(%|in|cm|mm|em|ex|pt|pc|px)?)')
 class NoSpriteFound(Exception): pass
 class PositionedBackground(NoSpriteFound): pass
 
-_pos_names = ("top", "center", "bottom", "right", "middle", "left")
+_pos_names = {"top":"0%",
+              "center":"50%",
+              "bottom":"100%",
+              "right":"100%",
+              "middle":"50%",
+              "left":"0%"
+            }
 _pos_units = ("px", "%")
 
 def _bg_positioned(val):
     parts = val.replace(';','')
     parts = parts.split()
 
+    returnList = []
     if len(parts) >= 3:
         for p in parts:
             if p in _pos_names:
-                yield _pos_names[p]
+                returnList.append(_pos_names[p])
             elif po_url_re.search(p):
-                yield po_url_re.search(p).groups()[0]
+                returnList.append(po_url_re.search(p).groups()[0])
+    return returnList
+
+def _replace_sref_val(position):
+    returnList = []
+    for i in position:
+        if i.find('px')!=-1 :
+            search_result = i.replace("px","")
+            returnList.append(int(search_result))
+        elif i.find('%')!=-1 :
+            search_result = i.replace("%","")
+            returnList.append(int(search_result)/100)
+    return returnList
 
 def _match_background_url(val):
     mo = bg_url_re.search(val)

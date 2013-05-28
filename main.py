@@ -1,3 +1,4 @@
+# coding=utf-8
 import sys
 import logging
 import optparse
@@ -23,6 +24,7 @@ class CSSFile(object):
         self.conf = conf
 
     @contextmanager
+    #open_parser:打开文件 返回一个迭代器 迭代内容是CSSParser实例.
     def open_parser(self):
         with open(self.fname, "rb") as fp:
             yield CSSParser.read_file(fp)
@@ -141,5 +143,4 @@ def main():
     spritemap([css_cls.open_file(fn, conf=conf) for fn in args], conf=conf)
 
 if __name__ == "__main__":
-    print('hellohaha')
     main()

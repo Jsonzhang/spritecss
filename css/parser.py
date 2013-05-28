@@ -18,6 +18,7 @@ following lexemes:
 """
 
 import sys
+import re
 from itertools import imap
 from collections import deque
 
@@ -542,7 +543,9 @@ def iter_print_css(parser):
 
 def print_css(parser, out=sys.stdout):
     """Print an event stream of CSS parser events."""
+    #cssslash = re.compile(r'(\\)(?:[^\'])')
     for data in iter_print_css(parser):
+        #data = cssslash.sub('/',data)
         out.write(data)
 
 def main():

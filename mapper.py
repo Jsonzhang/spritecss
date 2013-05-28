@@ -1,7 +1,6 @@
 # coding=utf-8
 import logging
 from os import path
-from finder import get_Position
 from spritecss import SpriteMap
 from spritecss.config import CSSConfig
 
