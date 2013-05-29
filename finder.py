@@ -25,28 +25,30 @@ _pos_names = {"top":"0%",
             }
 _pos_units = ("px", "%")
 
-def _bg_positioned(val):
+def _bg_positioned(val , sure_bg_position):
     parts = val.replace(';','')
     parts = parts.split()
 
     returnList = []
-    if len(parts) >= 3:
+    if len(parts) >= 3 or sure_bg_position == True:
         for p in parts:
             if p in _pos_names:
                 returnList.append(_pos_names[p])
             elif po_url_re.search(p):
                 returnList.append(po_url_re.search(p).groups()[0])
     return returnList
-
+def _bg_num_position(val , sure_bg_position = False):
+    return _replace_sref_val(_bg_positioned(val , sure_bg_position))
 def _replace_sref_val(position):
     returnList = []
     for i in position:
         if i.find('px')!=-1 :
             search_result = i.replace("px","")
             returnList.append(int(search_result))
-        elif i.find('%')!=-1 :
-            search_result = i.replace("%","")
-            returnList.append(int(search_result)/100)
+        elif i.find('%')!=-1 or i.find('in')!=-1 or i.find('em')!=-1 or i.find('ex')!=-1 or i.find('pc')!=-1 or i.find('pt')!=-1 or i.find('mm')!=-1 or i.find('cm')!=-1:
+            pass
+            #search_result = i.replace("%","")
+            #returnList.append(int(search_result)/100)
     return returnList
 
 def _match_background_url(val):
@@ -63,9 +65,10 @@ def _match_background_position(val):
 
 def get_background_url(val):
     return _match_background_url(val)
-
-def get_Position(val):
-        return _bg_positioned(val)
+def get_background_position(val):
+    return _match_background_position(val)
+def get_Position(val , sure_bg_position = False):
+        return _bg_positioned(val , sure_bg_position)
 
 def find_decl_background_url(decl):
     (prop, val) = split_declaration(decl)

@@ -50,7 +50,7 @@ class SpriteRef(object):
 
     def __eq__(self, o):
         if hasattr(o, "fname") and hasattr(o,"position"):
-            return o.fname+' '+''.join(o.position) == self.fname + ' ' + ''.join(self.position)
+            return o.fname+' '+''.join(str(o.position)) == self.fname + ' ' + ''.join(self.position)
         return NotImplemented
 
 class MappedSpriteRef(SpriteRef):
