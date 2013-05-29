@@ -531,7 +531,7 @@ def iter_print_css(parser):
         elif event.lexeme == "declaration":
             yield event.declaration + ";"
         elif event.lexeme == "block_end":
-            yield "}"
+            yield "\r}"
         elif event.lexeme == "whitespace":
             yield event.whitespace
         elif event.lexeme == "at_block":

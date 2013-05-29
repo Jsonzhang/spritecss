@@ -25,7 +25,7 @@ _pos_names = {"top":"0%",
             }
 _pos_units = ("px", "%")
 
-def _bg_positioned(val , sure_bg_position):
+def _bg_positioned(val , sure_bg_position=False):
     parts = val.replace(';','')
     parts = parts.split()
 
@@ -42,11 +42,11 @@ def _bg_num_position(val , sure_bg_position = False):
 def _replace_sref_val(position):
     returnList = []
     for i in position:
-        if i.find('px')!=-1 :
+        if i.find('%')!=-1 or i.find('in')!=-1 or i.find('em')!=-1 or i.find('ex')!=-1 or i.find('pc')!=-1 or i.find('pt')!=-1 or i.find('mm')!=-1 or i.find('cm')!=-1:
+            pass
+        else:
             search_result = i.replace("px","")
             returnList.append(int(search_result))
-        elif i.find('%')!=-1 or i.find('in')!=-1 or i.find('em')!=-1 or i.find('ex')!=-1 or i.find('pc')!=-1 or i.find('pt')!=-1 or i.find('mm')!=-1 or i.find('cm')!=-1:
-            pass
             #search_result = i.replace("%","")
             #returnList.append(int(search_result)/100)
     return returnList
@@ -54,7 +54,7 @@ def _replace_sref_val(position):
 def _match_background_url(val):
     mo = bg_url_re.search(val)
     if not mo:
-        raise NoSpriteFound(val)
+        return ""
     return mo.groups()[0]
 
 def _match_background_position(val):
@@ -100,11 +100,10 @@ def iter_spriterefed(evs, conf=None, source=None, root=None):
         if ev.lexeme == "declaration":
             try:
                 url = find_decl_background_url(ev.declaration)
-                position = list(get_Position(ev.declaration))
             except NoSpriteFound:
                 pass
             else:
-                sprite = SpriteRef(normpath(url), source=source ,position = position)
+                sprite = SpriteRef(normpath(url), source=source)
                 ev = SpriteEvent(ev, sprite)
         yield ev
 
